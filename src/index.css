@@ -28,6 +28,8 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  /* account for fixed navbar height so content isn't hidden behind it */
+  padding-top: 70px;
 }
 
 h1 {
