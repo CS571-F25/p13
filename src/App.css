@@ -86,6 +86,36 @@
   font-weight: 600;
 }
 
+.helper-panel {
+  background: linear-gradient(135deg, #4361ee14, #ff6b6b0f);
+  border: 1px solid #e1e7ff;
+  border-radius: 12px;
+  padding: 16px 18px;
+  margin-bottom: 16px;
+}
+
+.helper-panel h5 {
+  margin: 0 0 8px;
+}
+
+.helper-steps {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.helper-steps li {
+  padding: 6px 10px;
+  background: #ffffff;
+  border-radius: 10px;
+  border: 1px solid #e9ecf5;
+  font-size: 0.9rem;
+  color: #3c4257;
+}
+
 .toolbar {
   display: flex;
   flex-wrap: wrap;
