@@ -16,24 +16,26 @@ function generatePlaceholderImages(count = 9) {
   });
 }
 
-async function fetchPexels(query, count = 9) {
-  const pexelsProxyUrl = import.meta.env.VITE_PEXELS_PROXY_URL;
+async function fetchImages(query, count = 9) {
+  const backendUrl = "https://boardify-backend.vercel.app/api/images";
+  const tempUrl = "http://localhost:3000/api/images"
 
   try {
-    const response = await fetch(pexelsProxyUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query, count }),
-    });
+    const url = new URL(tempUrl);
+    url.searchParams.append("query", query);
+    url.searchParams.append("images", count);
+
+    const response = await fetch(url.toString());
 
     if (!response.ok) {
-      throw new Error("Pexels proxy request failed");
+      console.error("Backend error: ", response.status);
+      throw new Error("Backend request failed");
     }
 
     const data = await response.json();
-    return data.photos || [];
+    return data;
   } catch (err) {
-    console.error("Pexels proxy error:", err);
+    console.error("Backend error:", err);
     throw err;
   }
 }
@@ -118,7 +120,7 @@ export default function Board({ showGuide = true }) {
     setStatus(t.board.statusFetch(themeStr, null));
     setError("");
     try {
-      const pex = await fetchPexels(themeStr, 9);
+      const pex = await fetchImages(themeStr, 9);
       setImages(pex.length > 0 ? pex : generatePlaceholderImages());
       setStatus(t.board.statusFetch(themeStr, pex.length));
     } catch (err) {
@@ -162,7 +164,7 @@ export default function Board({ showGuide = true }) {
         } else {
           const searchQuery = keywords.join(" ");
           setStatus(t.board.statusFetch(searchQuery, null));
-          const newImages = await fetchPexels(searchQuery, 10);
+          const newImages = await fetchImages(searchQuery, 10);
           setImages(newImages.length ? newImages : generatePlaceholderImages());
           if (!newImages.length) {
             setError(t.board.statusFallback);
@@ -266,18 +268,6 @@ export default function Board({ showGuide = true }) {
         </div>
       </div>
 
-      <Row>
-        <Col>
-          <ImageGrid
-            images={images}
-            setImages={setImages}
-            loading={loading}
-            boardRef={boardRef}
-            emptyMessage={t.board.empty}
-          />
-        </Col>
-      </Row>
-
       {status && (
         <Alert variant="info" className="mt-3 py-2">
           {loading && (
@@ -291,6 +281,18 @@ export default function Board({ showGuide = true }) {
           {error}
         </Alert>
       )}
+
+      <Row>
+        <Col>
+          <ImageGrid
+            images={images}
+            setImages={setImages}
+            loading={loading}
+            boardRef={boardRef}
+            emptyMessage={t.board.empty}
+          />
+        </Col>
+      </Row>
     </Container>
   );
 }
