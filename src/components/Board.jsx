@@ -10,7 +10,7 @@ function generatePlaceholderImages(count = 9) {
     const seed = Math.random().toString(36).slice(2, 8);
     return {
       id: `placeholder-${seed}`,
-      url: `https://picsum.photos/seed/${seed}/300/200`,
+      url: `https://picsum.photos/seed/${seed}/900/600`,
       alt: `Placeholder ${seed}`,
     };
   });
@@ -60,7 +60,7 @@ async function getKeywords(prompt) {
   }
 }
 
-export default function Board() {
+export default function Board({ showGuide = true }) {
   const [theme, setTheme] = useState("");
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -215,16 +215,18 @@ export default function Board() {
   };
 
   return (
-    <Container className="py-4">
-      <div className="helper-panel">
-        <h5>{t.quickGuide}</h5>
-        <ul className="helper-steps">
-          <li>{t.step1}</li>
-          <li>{t.step2}</li>
-          <li>{t.step3}</li>
-          <li>{t.step4}</li>
-        </ul>
-      </div>
+    <Container fluid className="board-container">
+      {showGuide && (
+        <div className="helper-panel">
+          <h5>{t.quickGuide}</h5>
+          <ul className="helper-steps">
+            <li>{t.step1}</li>
+            <li>{t.step2}</li>
+            <li>{t.step3}</li>
+            <li>{t.step4}</li>
+          </ul>
+        </div>
+      )}
 
       <div className="toolbar mb-3">
         <div className="toolbar-search">

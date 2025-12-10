@@ -31,6 +31,15 @@
   overflow: hidden;
 }
 
+.hero-demo {
+  padding-bottom: 28px;
+}
+
+.board-main {
+  margin-top: 0;
+  padding-top: 0;
+}
+
 .hero::after {
   content: "";
   position: absolute;

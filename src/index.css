@@ -28,7 +28,7 @@ body {
   min-height: 100vh;
   background-color: var(--brand-bg);
   color: var(--brand-text);
-  padding-top: 72px;
+  padding-top: 58px;
 }
 
 a {
@@ -60,6 +60,10 @@ a:hover {
 
 .section {
   margin-top: 56px;
+}
+
+.page-shell.section {
+  margin-top: 0px;
 }
 
 .card-ghost {

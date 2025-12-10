@@ -14,19 +14,28 @@ export default function Demo() {
   return (
     <div>
       <SiteNavbar />
-      <div className="page-shell section">
-        <div className="d-flex flex-column flex-md-row align-items-start justify-content-between mb-3 gap-3">
-          <div>
-            <div className="callout mb-2">{t.demo.callout}</div>
-            <h2 className="mb-2">{t.demo.heading}</h2>
+      <header className="hero hero-demo">
+        <div className="page-shell hero-inner">
+          <div className="callout mb-2">{t.demo.callout}</div>
+          <h1 className="display-5 mb-2">{t.demo.heading}</h1>
+          <div className="helper-panel text-start">
+            <h5 className="mb-2">{t.quickGuide}</h5>
+            <ul className="helper-steps">
+              <li>{t.step1}</li>
+              <li>{t.step2}</li>
+              <li>{t.step3}</li>
+              <li>{t.step4}</li>
+            </ul>
           </div>
         </div>
+      </header>
+      <main className="page-shell section board-main">
         <ErrorBoundary>
           <Suspense fallback={<div className="card-ghost p-4 text-center">Loading demo...</div>}>
-            <Board />
+            <Board showGuide={false} />
           </Suspense>
         </ErrorBoundary>
-      </div>
+      </main>
     </div>
   );
 }
