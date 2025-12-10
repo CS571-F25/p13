@@ -64,9 +64,10 @@ export default function ImageGrid({
             role="status"
             aria-hidden
           />
-          <span>이미지를 불러오는 중...</span>
+          <span aria-live="polite">Loading images...</span>
         </div>
       )}
     </>
   )
 }
+
