@@ -15,7 +15,7 @@ import "./Board.css";
 import { useI18n } from "../i18n.jsx";
 
 function generatePlaceholderImages(count = 9) {
-  return Array.from({ length: count }, (_, i) => {
+  return Array.from({ length: count }, () => {
     const seed = Math.random().toString(36).slice(2, 8);
     return {
       id: `placeholder-${seed}`,
@@ -27,10 +27,10 @@ function generatePlaceholderImages(count = 9) {
 
 async function fetchImages(query, count = 9) {
   const backendUrl = "https://boardify-backend.vercel.app/api/images";
-  const tempUrl = "http://localhost:3000/api/images";
+  // const tempUrl = "http://localhost:3000/api/images";
 
   try {
-    const url = new URL(tempUrl);
+    const url = new URL(backendUrl);
     url.searchParams.append("query", query);
     url.searchParams.append("images", count);
 
@@ -50,10 +50,11 @@ async function fetchImages(query, count = 9) {
 }
 
 async function getKeywords(theme, tweakPrompt, previousTweaks, selectedImages) {
-  const tempUrl = "http://localhost:3000/api/tweak-images";
+  const backendUrl = "https://boardify-backend.vercel.app/api/tweak-images";
+  // const tempUrl = "http://localhost:3000/api/tweak-images";
 
   try {
-    const response = await fetch(tempUrl, {
+    const response = await fetch(backendUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -141,7 +142,7 @@ export default function Board({ showGuide = true }) {
         setImages(pex.length > 0 ? pex : generatePlaceholderImages());
         setStatus(t.board.statusFetch(themeStr, pex.length));
       } catch (err) {
-        console.error("Using random placeholders");
+        console.log("Search Error: ", err)
         setImages(generatePlaceholderImages());
         setError(t.board.errorFetch);
       } finally {
@@ -249,6 +250,7 @@ export default function Board({ showGuide = true }) {
       await navigator.clipboard.writeText(dataUrl);
       setStatus(t.board.statusCopy);
     } catch (err) {
+      console.log("Export error:", err);
       setError(t.board.errorCopy);
     } finally {
       setExporting(false);
