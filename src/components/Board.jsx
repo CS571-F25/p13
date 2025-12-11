@@ -273,8 +273,13 @@ export default function Board({ showGuide = true }) {
 
       <div className="toolbar mb-3">
         <div className="toolbar-search">
+          <Form.Label htmlFor="board-search-input" className="visually-hidden">
+            Search theme or prompt tweaks
+          </Form.Label>
           <InputGroup className="fixed-input-group">
             <Form.Control
+              id="board-search-input"
+              aria-label="Search theme or prompt tweaks"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch(input)}

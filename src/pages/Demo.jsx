@@ -19,7 +19,7 @@ export default function Demo() {
           <div className="callout mb-2">{t.demo.callout}</div>
           <h1 className="display-5 mb-2">{t.demo.heading}</h1>
           <div className="helper-panel text-start">
-            <h5 className="mb-2">{t.quickGuide}</h5>
+            <h2 className="h5 mb-2">{t.quickGuide}</h2>
             <ul className="helper-steps">
               <li>{t.step1}</li>
               <li>{t.step2}</li>

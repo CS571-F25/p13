@@ -20,7 +20,7 @@ export default function Home() {
           <h1 className="display-5 mb-3">{t.heroTitle}</h1>
 
           <div className="helper-panel text-start">
-            <h5 className="mb-2">{t.quickGuide}</h5>
+            <h2 className="h5 mb-2">{t.quickGuide}</h2>
             <ul className="helper-steps">
               <li>{t.step1}</li>
               <li>{t.step2}</li>
@@ -36,21 +36,22 @@ export default function Home() {
           />
 
           <div className="section">
+            <h2 className="h5 mb-3">Features</h2>
             <div className="feature-grid">
               <div className="feature-card">
-                <h5>{t.features.smart.title}</h5>
+                <h3 className="h5">{t.features.smart.title}</h3>
                 <p className="mb-0 text-muted">{t.features.smart.desc}</p>
               </div>
               <div className="feature-card">
-                <h5>{t.features.layout.title}</h5>
+                <h3 className="h5">{t.features.layout.title}</h3>
                 <p className="mb-0 text-muted">{t.features.layout.desc}</p>
               </div>
               <div className="feature-card">
-                <h5>{t.features.export.title}</h5>
+                <h3 className="h5">{t.features.export.title}</h3>
                 <p className="mb-0 text-muted">{t.features.export.desc}</p>
               </div>
               <div className="feature-card">
-                <h5>{t.features.demo.title}</h5>
+                <h3 className="h5">{t.features.demo.title}</h3>
                 <p className="mb-0 text-muted">{t.features.demo.desc}</p>
               </div>
             </div>
