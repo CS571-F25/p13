@@ -25,6 +25,7 @@ export default function Demo() {
               <li>{t.step2}</li>
               <li>{t.step3}</li>
               <li>{t.step4}</li>
+              <li>{t.step5}</li>
             </ul>
           </div>
         </div>

@@ -21,7 +21,6 @@ export default function Contact(){
       <div className="page-shell section contact-section">
         <div className="contact-hero">
           <div className="contact-hero-text">
-            <span className="pill pill-contrast">Support desk</span>
             <h1 className="display-6 fw-bold mb-2">{t.contact.title}</h1>
             <p className="text-muted mb-3 contact-hero-subtitle">{t.contact.subtitle}</p>
             <div className="contact-meta">
@@ -48,13 +47,6 @@ export default function Contact(){
               </div>
             </div>
           </div>
-          <div className="contact-hero-badge">
-            <div className="pulse-dot" />
-            <div>
-              <div className="meta-label">Status</div>
-              <div className="meta-value">Team is online</div>
-            </div>
-          </div>
         </div>
 
         <div className="contact-grid">
@@ -64,7 +56,6 @@ export default function Contact(){
                 <h2 className="h4 mb-1">Tell us about your project</h2>
                 <p className="text-muted mb-0">Share the audience, style, and timing so we can guide you faster.</p>
               </div>
-              <div className="chip-ghost">Concise is best</div>
             </div>
             <form onSubmit={handleSubmit} className="mt-3">
               <div className="input-stack">

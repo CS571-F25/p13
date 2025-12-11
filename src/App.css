@@ -173,6 +173,12 @@
   z-index: 1;
 }
 
+.contact-page {
+  min-height: 100%;
+  background: linear-gradient(120deg, rgba(230, 0, 35, 0.08), rgba(29, 155, 240, 0.06));
+  padding-bottom: 64px;
+}
+
 .contact-section {
   margin-top: 48px;
   margin-bottom: 64px;
@@ -184,20 +190,8 @@
   gap: 18px;
   align-items: flex-start;
   justify-content: space-between;
-  padding: 24px;
-  border-radius: 18px;
-  border: 1px solid #e6eaf5;
-  background: linear-gradient(120deg, rgba(230, 0, 35, 0.08), rgba(29, 155, 240, 0.06));
-  box-shadow: var(--shadow-soft);
+  padding-top: 2rem;
   overflow: hidden;
-}
-
-.contact-hero::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(520px circle at 80% 0%, rgba(255, 255, 255, 0.5), transparent 50%);
-  pointer-events: none;
 }
 
 .contact-hero-text {

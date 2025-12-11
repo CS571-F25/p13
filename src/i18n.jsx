@@ -11,8 +11,9 @@ const messages = {
     quickGuide: "Quick guide",
     step1: "1) Enter a theme → Search",
     step2: "2) Arrange cards by drag",
-    step3: "3) Add tweaks like “warmer” or “pastel”",
-    step4: "4) Export PNG or Copy",
+    step3: "3) Select cards to change",
+    step4: "4) Add tweaks like “warmer” or “pastel”",
+    step5: "5) Export PNG or Copy",
     features: {
       smart: {
         title: "Smart search",
@@ -70,8 +71,9 @@ const messages = {
     quickGuide: "빠른 사용법",
     step1: "1) 테마 입력 → Search",
     step2: "2) 드래그로 카드 정렬",
-    step3: "3) “더 따뜻하게”, “파스텔 느낌” 보정",
-    step4: "4) Export PNG 또는 Copy",
+    step3: "3) 수정하고 싶은 이미지 선택",
+    step4: "4) “더 따뜻하게”, “파스텔 느낌” 보정",
+    step5: "5) Export PNG 또는 Copy",
     features: {
       smart: {
         title: "스마트 검색",
