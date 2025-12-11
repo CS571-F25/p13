@@ -1,5 +1,14 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { Container, Form, Button, InputGroup, Alert, Spinner, Row, Col } from "react-bootstrap";
+import {
+  Container,
+  Form,
+  Button,
+  InputGroup,
+  Alert,
+  Spinner,
+  Row,
+  Col,
+} from "react-bootstrap";
 import html2canvas from "html2canvas";
 import ImageGrid from "./ImageGrid";
 import "./Board.css";
@@ -18,7 +27,7 @@ function generatePlaceholderImages(count = 9) {
 
 async function fetchImages(query, count = 9) {
   const backendUrl = "https://boardify-backend.vercel.app/api/images";
-  const tempUrl = "http://localhost:3000/api/images"
+  const tempUrl = "http://localhost:3000/api/images";
 
   try {
     const url = new URL(tempUrl);
@@ -40,38 +49,47 @@ async function fetchImages(query, count = 9) {
   }
 }
 
-async function getKeywords(prompt) {
-  const aiKeywordsUrl = import.meta.env.VITE_AI_KEYWORDS_URL;
+async function getKeywords(theme, tweakPrompt, previousTweaks, selectedImages) {
+  const tempUrl = "http://localhost:3000/api/tweak-images";
 
   try {
-    const response = await fetch(aiKeywordsUrl, {
+    const response = await fetch(tempUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt }),
+      body: JSON.stringify({
+        theme,
+        tweakPrompt,
+        previousTweaks,
+        selectedImages,
+      }),
     });
 
     if (!response.ok) {
-      throw new Error("AI keywords proxy request failed");
+      console.error("error: ", response);
+      throw new Error("AI keywords request failed", response.status);
     }
 
     const data = await response.json();
-    return data.keywords || [];
+
+    return data;
   } catch (err) {
-    console.error("AI keywords proxy error:", err);
+    console.error("AI keywords error:", err);
     throw err;
   }
 }
 
 export default function Board({ showGuide = true }) {
-  const [theme, setTheme] = useState("");
+  const [theme, setTheme] = useState(null);
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
-  const [hasSearched, setHasSearched] = useState(false);
   const [input, setInput] = useState("");
   const [exportQuality, setExportQuality] = useState("standard");
   const [exporting, setExporting] = useState(false);
+  const [selectedImages, setSelectedImages] = useState([]);
+  const [previousTweaks, setPreviousTweaks] = useState([]);
+
   const boardRef = useRef(null);
   const { t } = useI18n();
 
@@ -79,11 +97,10 @@ export default function Board({ showGuide = true }) {
     if (!boardRef.current) return;
     const imgs = Array.from(boardRef.current.querySelectorAll("img"));
     await Promise.all(
-      imgs.map(
-        (img) =>
-          img.complete
-            ? Promise.resolve()
-            : new Promise((resolve) => {
+      imgs.map((img) =>
+        img.complete
+          ? Promise.resolve()
+          : new Promise((resolve) => {
               img.addEventListener("load", resolve, { once: true });
               img.addEventListener("error", resolve, { once: true });
             })
@@ -114,23 +131,25 @@ export default function Board({ showGuide = true }) {
     return canvas;
   };
 
-
-  const fetchForTheme = useCallback(async (themeStr) => {
-    setLoading(true);
-    setStatus(t.board.statusFetch(themeStr, null));
-    setError("");
-    try {
-      const pex = await fetchImages(themeStr, 9);
-      setImages(pex.length > 0 ? pex : generatePlaceholderImages());
-      setStatus(t.board.statusFetch(themeStr, pex.length));
-    } catch (err) {
-      console.error("Using random placeholders");
-      setImages(generatePlaceholderImages());
-      setError(t.board.errorFetch);
-    } finally {
-      setLoading(false);
-    }
-  }, [t]);
+  const fetchForTheme = useCallback(
+    async (themeStr) => {
+      setLoading(true);
+      setStatus(t.board.statusFetch(themeStr, null));
+      setError("");
+      try {
+        const pex = await fetchImages(themeStr, 9);
+        setImages(pex.length > 0 ? pex : generatePlaceholderImages());
+        setStatus(t.board.statusFetch(themeStr, pex.length));
+      } catch (err) {
+        console.error("Using random placeholders");
+        setImages(generatePlaceholderImages());
+        setError(t.board.errorFetch);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [t]
+  );
 
   useEffect(() => {
     const qp = new URLSearchParams(window.location.hash.split("?")[1]);
@@ -140,7 +159,6 @@ export default function Board({ showGuide = true }) {
       setTheme(themeFromUrl);
       setInput(themeFromUrl);
       fetchForTheme(themeFromUrl);
-      setHasSearched(true);
     }
   }, [fetchForTheme]);
 
@@ -150,26 +168,47 @@ export default function Board({ showGuide = true }) {
     setLoading(true);
     setError("");
 
-    if (!hasSearched) {
+    if (!theme) {
       setTheme(searchInput);
       await fetchForTheme(searchInput);
-      setHasSearched(true);
     } else {
-      try {
-        const keywords = await getKeywords(searchInput);
+      if (selectedImages.length === 0) {
+        setLoading(false);
+        setError("No images to tweak.");
+        return;
+      }
 
-        if (!keywords.length) {
+      try {
+        const results = await getKeywords(
+          theme,
+          searchInput,
+          previousTweaks,
+          selectedImages
+        );
+        const keywords = results.searchQuery;
+        setStatus(`Regenerated ${selectedImages.length} images for "${keywords}"`);
+
+        const newImages = results.images || [];
+        if (!newImages.length) {
           setImages(generatePlaceholderImages());
-          setStatus(t.board.statusFallback);
-        } else {
-          const searchQuery = keywords.join(" ");
-          setStatus(t.board.statusFetch(searchQuery, null));
-          const newImages = await fetchImages(searchQuery, 10);
-          setImages(newImages.length ? newImages : generatePlaceholderImages());
-          if (!newImages.length) {
-            setError(t.board.statusFallback);
-          }
+          setError(t.board.statusFallback);
+          return;
         }
+
+        setImages((prevImages) => {
+          const imageMap = newImages.reduce((map, img, idx) => {
+            map[selectedImages[idx]] = img;
+            return map;
+          }, {});
+
+          return prevImages.map((img) =>
+            imageMap[img.id] ? imageMap[img.id] : img
+          );
+        });
+
+        setSelectedImages([]);
+
+        setPreviousTweaks((prev) => [...prev, searchInput]);
       } catch (err) {
         console.error("AI fetch failed, using placeholders", err);
         setImages(generatePlaceholderImages());
@@ -238,13 +277,13 @@ export default function Board({ showGuide = true }) {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch(input)}
               placeholder={
-                hasSearched
+                theme === null
                   ? "Try: 'make it warmer' or 'add more colors'"
                   : "Enter a theme (e.g. cozy coffee shop)"
               }
             />
             <Button onClick={() => handleSearch(input)}>
-              {hasSearched ? "Apply" : "Search"}
+              {theme === null ? "Apply" : "Search"}
             </Button>
           </InputGroup>
         </div>
@@ -259,10 +298,20 @@ export default function Board({ showGuide = true }) {
             <option value="standard">Export: Standard</option>
             <option value="high">Export: High-res</option>
           </Form.Select>
-          <Button onClick={exportSnapshot} variant="primary" disabled={exporting} className="toolbar-btn">
+          <Button
+            onClick={exportSnapshot}
+            variant="primary"
+            disabled={exporting}
+            className="toolbar-btn"
+          >
             {exporting ? "Exporting..." : "Export PNG"}
           </Button>
-          <Button variant="outline-secondary" onClick={copySnapshot} disabled={exporting} className="toolbar-btn">
+          <Button
+            variant="outline-secondary"
+            onClick={copySnapshot}
+            disabled={exporting}
+            className="toolbar-btn"
+          >
             Copy
           </Button>
         </div>
@@ -270,9 +319,7 @@ export default function Board({ showGuide = true }) {
 
       {status && (
         <Alert variant="info" className="mt-3 py-2">
-          {loading && (
-            <Spinner animation="border" size="sm" className="me-2" />
-          )}
+          {loading && <Spinner animation="border" size="sm" className="me-2" />}
           {status}
         </Alert>
       )}
@@ -287,6 +334,8 @@ export default function Board({ showGuide = true }) {
           <ImageGrid
             images={images}
             setImages={setImages}
+            selectedImages={selectedImages}
+            setSelectedImages={setSelectedImages}
             loading={loading}
             boardRef={boardRef}
             emptyMessage={t.board.empty}

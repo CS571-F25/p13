@@ -1,6 +1,6 @@
-import React from 'react'
 import Sortable from 'react-sortablejs'
 import './Board.css'
+import { AiOutlineCheck } from "react-icons/ai";
 
 // react-sortablejs exports a named ReactSortable export in some builds;
 // prefer that, then .default, then the import itself
@@ -9,15 +9,50 @@ const SortableComponent =
   (Sortable && Sortable.default) ||
   Sortable
 
-function SortableItem({ id, img }) {
+function SortableItem({ id, img, isSelected, onSelect }) {
+  // return (
+  //   <div className="masonry-item" data-id={id}>
+  //     <img
+  //       loading="lazy"
+  //       src={img.url}
+  //       alt={img.alt || 'Inspiration'}
+  //       draggable="false"
+  //     />
+  //   </div>
+  // )
   return (
-    <div className="masonry-item" data-id={id}>
+    <div
+      className="masonry-item"
+      data-id={id}
+      onClick={() => onSelect(id)}
+      style={{ position: "relative", cursor: "pointer" }}
+    >
       <img
         loading="lazy"
         src={img.url}
-        alt={img.alt || 'Inspiration'}
+        alt={img.alt}
         draggable="false"
+        style={{ display: "block", width: "100%" }}
       />
+      {isSelected && (
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(74, 74, 74, 0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: "2rem",
+            color: "#fff",
+          }}
+        >
+          <AiOutlineCheck size={48} color="#fff" />
+        </div>
+      )}
     </div>
   )
 }
@@ -25,11 +60,19 @@ function SortableItem({ id, img }) {
 export default function ImageGrid({
   images,
   setImages,
+  selectedImages,
+  setSelectedImages,
   loading,
   boardRef,
   emptyMessage,
 }) {
   const isEmpty = !images || images.length === 0
+
+  const toggleSelect = (id) => {
+    setSelectedImages(prev =>
+      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+    );
+  };
 
   return (
     <>
@@ -50,7 +93,12 @@ export default function ImageGrid({
               className="masonry-sortable"
             >
               {images.map((img) => (
-                <SortableItem key={img.id} id={img.id} img={img} />
+                <SortableItem 
+                key={img.id} 
+                id={img.id} 
+                img={img} 
+                isSelected={selectedImages.includes(img.id)}
+                onSelect={toggleSelect}/>
               ))}
             </SortableComponent>
           )}
