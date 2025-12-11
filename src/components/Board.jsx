@@ -21,6 +21,8 @@ function generatePlaceholderImages(count = 9) {
       id: `placeholder-${seed}`,
       url: `https://picsum.photos/seed/${seed}/900/600`,
       alt: `Placeholder ${seed}`,
+      author: "Lorem Picsum",
+      author_url: "https://picsum.photos"
     };
   });
 }

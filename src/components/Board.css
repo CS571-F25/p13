@@ -20,6 +20,7 @@
 }
 
 .masonry-item {
+  position: relative;
   break-inside: avoid;
   margin-bottom: 1.25rem;
   border-radius: 18px;
@@ -116,4 +117,54 @@
   border: 1px solid #e9ecf5;
   font-size: 0.9rem;
   color: #3c4257;
+}
+
+/* Image hover overlay styles */
+.image-hover-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 8px 12px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.masonry-item:hover .image-hover-overlay {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.image-hover-text {
+  color: white;
+  font-size: 12px;
+  text-align: right;
+  z-index: 2;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.image-hover-text a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.image-hover-text a:hover {
+  text-decoration: underline;
+}
+
+.image-select-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 3;
 }

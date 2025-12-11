@@ -10,22 +10,12 @@ const SortableComponent =
   Sortable
 
 function SortableItem({ id, img, isSelected, onSelect }) {
-  // return (
-  //   <div className="masonry-item" data-id={id}>
-  //     <img
-  //       loading="lazy"
-  //       src={img.url}
-  //       alt={img.alt || 'Inspiration'}
-  //       draggable="false"
-  //     />
-  //   </div>
-  // )
   return (
     <div
       className="masonry-item"
       data-id={id}
       onClick={() => onSelect(id)}
-      style={{ position: "relative", cursor: "pointer" }}
+      style={{ cursor: "pointer" }}
     >
       <img
         loading="lazy"
@@ -34,22 +24,22 @@ function SortableItem({ id, img, isSelected, onSelect }) {
         draggable="false"
         style={{ display: "block", width: "100%" }}
       />
+
+      <div className="image-hover-overlay">
+        <div className="image-hover-text">
+          Photo by{" "}
+          <a href={img.author_url} target="_blank" rel="noopener noreferrer">
+            {img.author}
+          </a>{" "}
+          on{" "}
+          <a href="https://unsplash.com/" target="_blank" rel="noopener noreferrer">
+            Unsplash
+          </a>
+        </div>
+      </div>
+      
       {isSelected && (
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            backgroundColor: "rgba(74, 74, 74, 0.5)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: "2rem",
-            color: "#fff",
-          }}
-        >
+        <div className='image-select-overlay'>
           <AiOutlineCheck size={48} color="#fff" />
         </div>
       )}
